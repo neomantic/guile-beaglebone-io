@@ -3,15 +3,21 @@
 
 AC_PREREQ([2.69])
 AC_INIT([beaglebone-io], [0.0.1], [calbers@neomantic.com])
-AC_CONFIG_SRCDIR([src/main.c])
+AC_CONFIG_SRCDIR([src])
 AC_CONFIG_HEADERS([config.h])
-AM_INIT_AUTOMAKE(1.14)
+AM_INIT_AUTOMAKE([silent-rules])
+
+AC_CONFIG_MACRO_DIR([m4])
+
+LT_INIT
+
+AC_DISABLE_STATIC
 
 # Checks for programs.
 AC_PROG_CC
 
 # Checks for libraries.
-PKG_CHECK_MODULES([guile],[guile-2.0])
+PKG_CHECK_MODULES([guile],[guile-2.0 >= 2.0.0])
 
 # Checks for header files.
 AC_CHECK_HEADERS([fcntl.h stddef.h stdlib.h string.h sys/ioctl.h unistd.h])
