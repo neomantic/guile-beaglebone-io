@@ -1,10 +1,13 @@
+#ifndef COMMON_H
+#define COMMON_H
+
 /*
 Copyright (c) 2013 Adafruit
 
 Original RPi.GPIO Author Ben Croston
 Modified for BBIO Author Justin Cooper
 
-This file incorporates work covered by the following copyright and 
+This file incorporates work covered by the following copyright and
 permission notice, all modified code adopts the original license:
 
 Copyright (c) 2013 Ben Croston
@@ -36,6 +39,8 @@ SOFTWARE.
 
 #define FILENAME_BUFFER_SIZE 128
 
+#include <stddef.h>
+
 int gpio_mode;
 int gpio_direction[120];
 
@@ -52,3 +57,5 @@ int load_device_tree(const char *name);
 int unload_device_tree(const char *name);
 int setup_error;
 int module_setup;
+
+#endif

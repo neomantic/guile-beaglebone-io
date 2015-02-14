@@ -21,13 +21,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "Python.h"
+#include "python.h"
 #include "constants.h"
 #include "common.h"
 #include "c_adc.h"
-
+/* FIXME:  */
 // Cleanup function commented out because it is currently disabled and this
-// generates unused method warnings. See adc_methods[] definition further 
+// generates unused method warnings. See adc_methods[] definition further
 // below for reason for disabling the cleanup function.
 // python function cleanup()
 //static PyObject *py_cleanup(PyObject *self, PyObject *args)
@@ -37,13 +37,13 @@ SOFTWARE.
 //
 //    Py_RETURN_NONE;
 //}
-
+/*
 // python function setup()
 static PyObject *py_setup_adc(PyObject *self, PyObject *args)
 {
     if (adc_setup())
         Py_RETURN_NONE;
-    
+
     PyErr_SetString(PyExc_RuntimeError, "Unable to setup ADC system. Possible causes are: \n"
                                         "  - A cape with a conflicting pin mapping is loaded \n"
                                         "  - A device tree object is loaded that uses the same name for a fragment: helper");
@@ -67,11 +67,11 @@ static PyObject *py_read(PyObject *self, PyObject *args)
     {
         PyErr_SetString(PyExc_RuntimeError, "You must setup() ADC prior to calling read.");
         return NULL;
-    }    
+    }
 
     if (!get_adc_ain(channel, &ain)) {
         PyErr_SetString(PyExc_ValueError, "Invalid AIN key or name.");
-        return NULL;    
+        return NULL;
     }
 
     success = read_value(ain, &value);
@@ -106,11 +106,11 @@ static PyObject *py_read_raw(PyObject *self, PyObject *args)
     {
         PyErr_SetString(PyExc_RuntimeError, "You must setup() ADC prior to calling read.");
         return NULL;
-    }       
+    }
 
     if (!get_adc_ain(channel, &ain)) {
         PyErr_SetString(PyExc_ValueError, "Invalid AIN key or name.");
-        return NULL;    
+        return NULL;
     }
 
     success = read_value(ain, &value);
@@ -172,3 +172,4 @@ PyMODINIT_FUNC initADC(void)
     return;
 #endif
 }
+*/

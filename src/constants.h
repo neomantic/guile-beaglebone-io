@@ -1,3 +1,8 @@
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+
+/* FIXME:  */
+/*
 PyObject *high;
 PyObject *low;
 PyObject *input;
@@ -10,5 +15,9 @@ PyObject *rising_edge;
 PyObject *falling_edge;
 PyObject *both_edge;
 PyObject *version;
+*/
 
-void define_constants(PyObject *module);
+/* FIXME:  */
+void define_constants(int integer);
+
+#endif

@@ -3,7 +3,7 @@
 
  * Modified for BBIO Author Justin Cooper
 
- * This file incorporates work covered by the following copyright and 
+ * This file incorporates work covered by the following copyright and
  * permission notice, all modified code adopts the original license:
  *
  * spimodule.c - Python bindings for Linux SPI access through spidev
@@ -23,8 +23,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include <Python.h>
-#include "structmember.h"
+#include "python.h"
+// python header
+//#include "structmember.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -33,6 +34,8 @@
 #include <sys/ioctl.h>
 #include "common.h"
 
+/* FIXME:  */
+/*
 PyDoc_STRVAR(SPI_module_doc,
 	"This module defines an object type that allows SPI transactions\n"
 	"on hosts running the Linux kernel. The host kernel must have SPI\n"
@@ -42,16 +45,17 @@ PyDoc_STRVAR(SPI_module_doc,
 	"\n"
 	"Because the SPI device interface is opened R/W, users of this\n"
 	"module usually must have root permissions.\n");
+*/
 
-typedef struct {
-	PyObject_HEAD
+/* typedef struct { */
+/* 	PyObject_HEAD */
 
-	int fd;	/* open file descriptor: /dev/spi-X.Y */
-	uint8_t mode;	/* current SPI mode */
-	uint8_t bpw;	/* current SPI bits per word setting */
-	uint32_t msh;	/* current SPI max speed setting in Hz */
-} SPI;
-
+/* 	int fd;	/\* open file descriptor: /dev/spi-X.Y *\/ */
+/* 	uint8_t mode;	/\* current SPI mode *\/ */
+/* 	uint8_t bpw;	/\* current SPI bits per word setting *\/ */
+/* 	uint32_t msh;	/\* current SPI max speed setting in Hz *\/ */
+/* } SPI; */
+/*
 static PyObject *
 SPI_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 {
@@ -83,7 +87,7 @@ SPI_close(SPI *self)
 	self->mode = 0;
 	self->bpw = 0;
 	self->msh = 0;
-	
+
 	Py_INCREF(Py_None);
 	return Py_None;
 }
@@ -168,7 +172,7 @@ SPI_readbytes(SPI *self, PyObject *args)
 	if (!PyArg_ParseTuple(args, "i:read", &len))
 		return NULL;
 
-	/* read at least 1 byte, no more than 1024 */
+	//read at least 1 byte, no more than 1024
 	if (len < 1)
 		len = 1;
 	else if (len > sizeof(rxbuf))
@@ -249,7 +253,7 @@ SPI_xfer(SPI *self, PyObject *args)
 		xferptr[ii].rx_buf = (unsigned long)&rxbuf[ii];
 		xferptr[ii].len = 1;
 		xferptr[ii].delay_usecs = delay;
-		xferptr[ii].speed_hz = 0;      
+		xferptr[ii].speed_hz = 0;
 		xferptr[ii].bits_per_word = 0;
 	}
 
@@ -291,7 +295,7 @@ SPI_xfer2(SPI *self, PyObject *args)
 {
 	static char *msg = "Argument must be a list of at least one, "
 				"but not more than 1024 integers";
-	int status;	
+	int status;
 	uint16_t ii, len;
 	PyObject *list;
 	struct spi_ioc_transfer	xfer;
@@ -328,9 +332,9 @@ SPI_xfer2(SPI *self, PyObject *args)
 	xfer.rx_buf = (unsigned long)rxbuf;
 	xfer.len = len;
 	xfer.delay_usecs = 0;
-	xfer.speed_hz = 0;      
+	xfer.speed_hz = 0;
 	xfer.bits_per_word = 0;
-	
+
 	status = ioctl(self->fd, SPI_IOC_MESSAGE(1), &xfer);
 	if (status < 0) {
 		free(txbuf);
@@ -700,7 +704,7 @@ SPI_open(SPI *self, PyObject *args, PyObject *kwds)
 	char device_tree_name[max_dt_length];
 	char path[MAXPATH];
 	uint8_t tmp8;
-	uint32_t tmp32;	
+	uint32_t tmp32;
 	static char *kwlist[] = {"bus", "device", NULL};
 	if (!PyArg_ParseTupleAndKeywords(args, kwds, "ii:open", kwlist, &bus, &device))
 		return NULL;
@@ -791,54 +795,54 @@ static PyMethodDef SPI_methods[] = {
 		SPI_xfer2_doc},
 	{NULL},
 };
-
-static PyTypeObject SPI_type = {
-	PyObject_HEAD_INIT(NULL)
-	0,				/* ob_size */
-	"SPI",			/* tp_name */
-	sizeof(SPI),			/* tp_basicsize */
-	0,				/* tp_itemsize */
-	(destructor)SPI_dealloc,	/* tp_dealloc */
-	0,				/* tp_print */
-	0,				/* tp_getattr */
-	0,				/* tp_setattr */
-	0,				/* tp_compare */
-	0,				/* tp_repr */
-	0,				/* tp_as_number */
-	0,				/* tp_as_sequence */
-	0,				/* tp_as_mapping */
-	0,				/* tp_hash */
-	0,				/* tp_call */
-	0,				/* tp_str */
-	0,				/* tp_getattro */
-	0,				/* tp_setattro */
-	0,				/* tp_as_buffer */
-	Py_TPFLAGS_DEFAULT,		/* tp_flags */
-	SPI_type_doc,			/* tp_doc */
-	0,				/* tp_traverse */
-	0,				/* tp_clear */
-	0,				/* tp_richcompare */
-	0,				/* tp_weaklistoffset */
-	0,				/* tp_iter */
-	0,				/* tp_iternext */
-	SPI_methods,			/* tp_methods */
-	0,				/* tp_members */
-	SPI_getset,			/* tp_getset */
-	0,				/* tp_base */
-	0,				/* tp_dict */
-	0,				/* tp_descr_get */
-	0,				/* tp_descr_set */
-	0,				/* tp_dictoffset */
-	(initproc)SPI_init,		/* tp_init */
-	0,				/* tp_alloc */
-	SPI_new,			/* tp_new */
-};
-
+*/
+//static PyTypeObject SPI_type = {
+// 	PyObject_HEAD_INIT(NULL)
+// 	0,				/* ob_size */
+// 	"SPI",			/* tp_name */
+// 	sizeof(SPI),			/* tp_basicsize */
+// 	0,				/* tp_itemsize */
+// 	(destructor)SPI_dealloc,	/* tp_dealloc */
+// 	0,				/* tp_print */
+// 	0,				/* tp_getattr */
+// 	0,				/* tp_setattr */
+// 	0,				/* tp_compare */
+// 	0,				/* tp_repr */
+// 	0,				/* tp_as_number */
+// 	0,				/* tp_as_sequence */
+//	0,				/* tp_as_mapping */
+// 	0,				/* tp_hash */
+// 	0,				/* tp_call */
+// 	0,				/* tp_str */
+// 	0,				/* tp_getattro */
+// 	0,				/* tp_setattro */
+// 	0,				/* tp_as_buffer */
+// 	Py_TPFLAGS_DEFAULT,		/* tp_flags */
+// 	SPI_type_doc,			/* tp_doc */
+// 	0,				/* tp_traverse */
+// 	0,				/* tp_clear */
+// 	0,				/* tp_richcompare */
+// 	0,				/* tp_weaklistoffset */
+// 	0,				/* tp_iter */
+// 	0,				/* tp_iternext */
+// 	SPI_methods,			/* tp_methods */
+// 	0,				/* tp_members */
+// 	SPI_getset,			/* tp_getset */
+// 	0,				/* tp_base */
+// 	0,				/* tp_dict */
+// 	0,				/* tp_descr_get */
+// 	0,				/* tp_descr_set */
+// 	0,				/* tp_dictoffset */
+// 	(initproc)SPI_init,		/* tp_init */
+// 	0,				/* tp_alloc */
+// 	SPI_new,			/* tp_new */
+//};
+/*
 static PyMethodDef SPI_module_methods[] = {
 	{NULL}
 };
 
-#ifndef PyMODINIT_FUNC	/* declarations for DLL import/export */
+#ifndef PyMODINIT_FUNC	// declarations for DLL import/export
 #define PyMODINIT_FUNC void
 #endif
 PyMODINIT_FUNC
@@ -853,5 +857,4 @@ initSPI(void)
 	Py_INCREF(&SPI_type);
 	PyModule_AddObject(m, "SPI", (PyObject *)&SPI_type);
 }
-
-
+*/

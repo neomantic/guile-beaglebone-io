@@ -4,7 +4,7 @@ Copyright (c) 2013 Adafruit
 Original RPi.GPIO Author Ben Croston
 Modified for BBIO Author Justin Cooper
 
-This file incorporates work covered by the following copyright and 
+This file incorporates work covered by the following copyright and
 permission notice, all modified code adopts the original license:
 
 Copyright (c) 2013 Ben Croston
@@ -28,17 +28,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "Python.h"
+#include "python.h"
 #include <dirent.h>
 #include <time.h>
 #include "common.h"
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
 
 int setup_error = 0;
 int module_setup = 0;
 
-typedef struct pins_t { 
-    const char *name; 
-    const char *key; 
+typedef struct pins_t {
+    const char *name;
+    const char *key;
     int gpio;
     int pwm_mux_mode;
     int ain;
@@ -145,10 +148,10 @@ pins_t table[] = {
     { NULL, NULL, 0 }
 };
 
-typedef struct uart_t { 
-    const char *name; 
-    const char *path; 
-    const char *dt; 
+typedef struct uart_t {
+    const char *name;
+    const char *path;
+    const char *dt;
     const char *rx;
     const char *tx;
 } uart_t;
@@ -221,7 +224,7 @@ int lookup_uart_by_name(const char *input_name, char *dt)
         if (strcmp(p->name, input_name) == 0) {
             strncpy(dt, p->dt, FILENAME_BUFFER_SIZE);
             dt[FILENAME_BUFFER_SIZE - 1] = '\0';
-            return 1;                
+            return 1;
         }
     }
     fprintf(stderr, "return 0 lookup_uart_by_name");
@@ -239,7 +242,7 @@ int copy_pwm_key_by_key(const char *input_key, char *key)
 
             strncpy(key, p->key, 7);
             key[7] = '\0';
-            return 1;                
+            return 1;
         }
     }
     return 0;
@@ -265,7 +268,7 @@ int get_pwm_key_by_name(const char *name, char *key)
 int get_gpio_number(const char *key, unsigned int *gpio)
 {
     *gpio = lookup_gpio_by_key(key);
-    
+
     if (!*gpio) {
         *gpio = lookup_gpio_by_name(key);
     }
@@ -285,7 +288,7 @@ int get_pwm_key(const char *input, char *key)
 int get_adc_ain(const char *key, unsigned int *ain)
 {
     *ain = lookup_ain_by_key(key);
-    
+
     if (*ain == -1) {
         *ain = lookup_ain_by_name(key);
 
@@ -335,7 +338,7 @@ int build_path(const char *partial_path, const char *prefix, char *full_path, si
 int get_spi_bus_path_number(unsigned int spi)
 {
   char path[50];
-  
+
   build_path("/sys/devices", "ocp", ocp_dir, sizeof(ocp_dir));
 
   if (spi == 0) {
@@ -343,7 +346,7 @@ int get_spi_bus_path_number(unsigned int spi)
   } else {
     snprintf(path, sizeof(path), "%s/481a0000.spi/spi_master/spi1", ocp_dir);
   }
-  
+
   DIR* dir = opendir(path);
   if (dir) {
     closedir(dir);
@@ -369,7 +372,8 @@ int load_device_tree(const char *name)
 
     file = fopen(slots, "r+");
     if (!file) {
-        PyErr_SetFromErrnoWithFilename(PyExc_IOError, slots);
+      /* FIXME:  */
+      //  PyErr_SetFromErrnoWithFilename(PyExc_IOError, slots);
         return 0;
     }
 
@@ -403,7 +407,8 @@ int unload_device_tree(const char *name)
 
     file = fopen(slots, "r+");
     if (!file) {
-        PyErr_SetFromErrnoWithFilename(PyExc_IOError, slots);
+      /* FIXME:  */
+      //PyErr_SetFromErrnoWithFilename(PyExc_IOError, slots);
         return 0;
     }
 

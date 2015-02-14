@@ -21,11 +21,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "Python.h"
+#include "python.h"
 #include "constants.h"
 #include "common.h"
 #include "c_pwm.h"
-
+/* FIXME:  */
+/*
 // python function cleanup()
 static PyObject *py_cleanup(PyObject *self, PyObject *args)
 {
@@ -47,11 +48,11 @@ static PyObject *py_start_channel(PyObject *self, PyObject *args, PyObject *kwar
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|ffi", kwlist, &channel, &duty_cycle, &frequency, &polarity)) {
         return NULL;
-    }   
+    }
 
     if (!get_pwm_key(channel, key)) {
         PyErr_SetString(PyExc_ValueError, "Invalid PWM key or name.");
-        return NULL;    
+        return NULL;
     }
 
     if (duty_cycle < 0.0 || duty_cycle > 100.0)
@@ -68,7 +69,7 @@ static PyObject *py_start_channel(PyObject *self, PyObject *args, PyObject *kwar
 
     if (polarity < 0 || polarity > 1) {
         PyErr_SetString(PyExc_ValueError, "polarity must be either 0 or 1");
-        return NULL;        
+        return NULL;
     }
 
     if (!pwm_start(key, duty_cycle, frequency, polarity))
@@ -88,7 +89,7 @@ static PyObject *py_stop_channel(PyObject *self, PyObject *args, PyObject *kwarg
 
     if (!get_pwm_key(channel, key)) {
         PyErr_SetString(PyExc_ValueError, "Invalid PWM key or name.");
-        return NULL;    
+        return NULL;
     }
 
     pwm_disable(key);
@@ -115,7 +116,7 @@ static PyObject *py_set_duty_cycle(PyObject *self, PyObject *args, PyObject *kwa
 
     if (!get_pwm_key(channel, key)) {
         PyErr_SetString(PyExc_ValueError, "Invalid PWM key or name.");
-        return NULL;    
+        return NULL;
     }
 
     if (pwm_set_duty_cycle(key, duty_cycle) == -1) {
@@ -145,7 +146,7 @@ static PyObject *py_set_frequency(PyObject *self, PyObject *args, PyObject *kwar
 
     if (!get_pwm_key(channel, key)) {
         PyErr_SetString(PyExc_ValueError, "Invalid PWM key or name.");
-        return NULL;    
+        return NULL;
     }
 
     if (pwm_set_frequency(key, frequency) == -1) {
@@ -204,3 +205,4 @@ PyMODINIT_FUNC initPWM(void)
     return;
 #endif
 }
+*/

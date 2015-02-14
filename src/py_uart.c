@@ -21,13 +21,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "Python.h"
+#include "python.h"
 #include "constants.h"
 #include "common.h"
 #include "c_uart.h"
 
 const char *valid_uarts[4] = {"UART1", "UART2", "UART4", "UART5"};
-
+/* FIXME:  */
+/*
 // python function cleanup()
 static PyObject *py_cleanup(PyObject *self, PyObject *args)
 {
@@ -55,7 +56,7 @@ static PyObject *py_setup_uart(PyObject *self, PyObject *args)
 
     if (!uart_setup(dt)) {
         PyErr_SetString(PyExc_RuntimeError, "Unable to export UART channel.");
-        return NULL;        
+        return NULL;
     }
 
     Py_RETURN_NONE;
@@ -105,3 +106,4 @@ PyMODINIT_FUNC initUART(void)
     return;
 #endif
 }
+*/
