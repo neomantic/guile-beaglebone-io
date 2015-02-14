@@ -11,6 +11,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 LT_INIT
 
+AC_ENABLE_SHARED
 AC_DISABLE_STATIC
 
 # Checks for programs.
