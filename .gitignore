@@ -1,4 +1,6 @@
 *.o
+*.lo
+*.la
 Makefile
 Makefile.in
 /autom4te.cache
@@ -18,3 +20,7 @@ m4
 .deps
 config.h
 config.h.in
+ltmain.sh
+libtool
+config.guess
+config.sub
