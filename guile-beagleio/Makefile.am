@@ -7,8 +7,8 @@ libguile_beagleio_la_SOURCES = c_adc.c c_adc.h \
 	c_uart.c c_uart.h \
 	event_gpio.c event_gpio.h \
 	python.h py_adc.c py_pwm.c py_gpio.c py_uart.c spimodule.c \
-	scm_gpio.c scm_gpio.h
+	guile_beagleio_gpio.h guile_beagleio_gpio.c
 libguile_beagleio_la_CFLAGS = $(AM_CFLAGS) @guile_CFLAGS@
 libguile_beagleio_la_LIBADD = -lzmq @guile_LIBS@
 libguile_beagleio_la_LDFLAGS = -export-dynamic -module -avoid-version
-noinst_HEADERS = common.h constants.h c_pwm.h c_uart.h event_gpio.h python.h scm_gpio.h
+noinst_HEADERS = common.h constants.h c_pwm.h c_uart.h event_gpio.h python.h guile_beagleio_gpio.h

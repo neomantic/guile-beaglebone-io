@@ -1,5 +1,5 @@
-#ifndef SCM_GPIO_H
-#define SCM_GPIO_H
+#ifndef GUILE_BEAGLEIO_GPIO_H
+#define GUILE_BEAGLEIO_GPIO_H
 
 #include <libguile.h>
 
@@ -11,9 +11,7 @@ struct gpio {
 
 static scm_t_bits gpio_tag;
 
-SCM setup_channel(SCM s_channel);
-void init_gpio_type(void);
-void init_beagleio_gpio(void *unused);
+void scm_init_beagleio_gpio(void *unused);
 void scm_init_beagleio_gpio_module();
 
 #endif

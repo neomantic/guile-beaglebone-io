@@ -1,7 +1,7 @@
 #include <libguile.h>
 #include "common.h"
 #include "event_gpio.h"
-#include "scm_gpio.h"
+#include "guile_beagleio_gpio.h"
 
 SCM
 setup_channel(SCM s_channel) {
@@ -64,7 +64,7 @@ equal_gpio(SCM gpio_smob, SCM other_gpio_smob ){
 }
 
 void
-sinit_gpio_type(void *unused) {
+init_gpio_type(void *unused) {
   gpio_tag = scm_make_smob_type("gpio", sizeof(struct gpio));
   scm_set_smob_print(gpio_tag, print_gpio);
   scm_set_smob_free(gpio_tag, free_gpio);
@@ -73,12 +73,12 @@ sinit_gpio_type(void *unused) {
 }
 
 void
-init_beagleio_gpio(void *unused) {
-  scm_c_define_gsubr("setup", 1, 0, 0, setup_channel);
-  scm_c_export("setup", NULL);
+scm_init_beagleio_gpio(void *unused) {
+  scm_c_define_gsubr("gpio-setup", 1, 0, 0, setup_channel);
+  scm_c_export("gpio-setup", NULL);
 }
 
 void
 scm_init_beagleio_gpio_module() {
-  scm_c_define_module("beagleio gpio", init_beagleio_gpio, NULL);
+  scm_c_define_module("beagleio gpio", scm_init_beagleio_gpio, NULL);
 }
