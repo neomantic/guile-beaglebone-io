@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <libguile.h>
 #include "common.h"
 #include "event_gpio.h"
@@ -91,8 +92,30 @@ init_gpio_type(void) {
   //scm_set_smob_equalp(gpio_tag, equal_gpio);
 }
 
+SCM
+set_direction(SCM gpio_smob, SCM direction_sym) {
+  struct gpio *gpio;
+  char *direction;
+  scm_assert_smob_type(gpio_tag, gpio_smob);
+  gpio = (struct gpio *) SCM_SMOB_DATA (gpio_smob);
+  direction = (char *)malloc((scm_c_symbol_length(direction_sym) * sizeof(char)) + 1);
+  strcpy(direction, (char *) scm_symbol_to_string(direction_sym));
+
+  if (strcmp("input", direction) == 0) {
+    gpio_set_direction(gpio->pin_number, INPUT);
+  } else if (strcmp("output", direction) == 0) {
+    gpio_set_direction(gpio->pin_number, OUTPUT);
+  } else {
+    free(direction);
+    scm_throw(scm_from_utf8_symbol("gpio-error"), scm_from_utf8_string("'input and 'output are the only acceptable gpio directions"));
+  }
+  free(direction);
+  return gpio_smob;
+}
+
 void
 scm_init_beagleio_gpio(void) {
   init_gpio_type();
   scm_c_define_gsubr("gpio-setup", 1, 0, 0, setup_channel);
+  scm_c_define_gsubr("gpio-direction-set!", 2, 0, 0, set_direction);
 }
