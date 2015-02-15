@@ -18,11 +18,16 @@ setup_channel(SCM s_channel) {
   struct gpio *gpio;
   unsigned int gpio_number;
   char *channel = scm_to_locale_string(s_channel);
+  int exported;
 
-  if (get_gpio_number(channel, &gpio_number))
-    return NULL;
+  if (get_gpio_number(channel, &gpio_number)) {
+    scm_throw(scm_from_utf8_symbol("gpio-error"), scm_from_utf8_string("unable to find pin number"));
+  }
 
-  //gpio_export(gpio_number);
+  exported = gpio_export(gpio_number);
+  if (exported != 0 ) {
+    scm_throw(scm_from_utf8_symbol("gpio-error"), scm_from_utf8_string("unable to export"));
+  }
 
   gpio = (struct gpio *) scm_gc_malloc(sizeof(struct gpio), "gpio");
   gpio->pin_number = gpio_number;
