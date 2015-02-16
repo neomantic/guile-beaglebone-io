@@ -115,12 +115,25 @@ set_direction(SCM gpio_smob, SCM pud) {
   return gpio_smob;
 }
 
+SCM
+get_direction(SCM gpio_smob) {
+  int gpio_get_direction(unsigned int gpio, unsigned int *value)
+  struct gpio *gpio;
+  unsigned int *value
+  scm_assert_smob_type(gpio_tag, gpio_smob);
+  gpio = (struct gpio *) SCM_SMOB_DATA (gpio_smob);
+  if (gpio_get_direction(gpio->pin_number, value) != 0) {
+    scm_throw(scm_from_utf8_symbol("gpio-error"), scm_from_utf8_string("unable to acquire level"));
+  }
+  return scm_from_int(value);
+}
+
 void
 scm_init_beagleio_gpio(void) {
   init_gpio_type();
   scm_c_define_gsubr("gpio-setup", 1, 0, 0, setup_channel);
   scm_c_define_gsubr("%gpio-direction-set!", 2, 0, 0, set_direction);
-  scm_c_define_gsubr("%gpio-direction-set!", 2, 0, 0, get_direction);
+  scm_c_define_gsubr("%gpio-direction-get", 1, 0, 0, get_direction);
   scm_c_define_gsubr("gpio-number-lookup", 1, 0, 0, lookup_gpio_number);
   scm_c_define("INPUT", scm_from_int(INPUT));
   scm_c_define("OUTPUT", scm_from_int(OUTPUT));

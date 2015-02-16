@@ -14,3 +14,9 @@
        ('input INPUT)
        ('output OUTPUT)
        (_ OUTPUT))))
+
+(define (gpio-direction-set! gpio)
+  (match
+    (%gpio-direction-get
+     (INPUT 'input)
+     (OUTPUT 'output))))
