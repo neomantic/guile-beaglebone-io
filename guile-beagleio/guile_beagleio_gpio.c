@@ -14,14 +14,28 @@ struct gpio {
 };
 
 SCM
+lookup_gpio_number(SCM s_channel) {
+  unsigned int gpio_number;
+  char *channel = scm_to_locale_string(s_channel);
+  get_gpio_number(channel, &gpio_number);
+  if(!gpio_number) {
+    return SCM_UNDEFINED;
+  } else {
+    return scm_from_ulong(gpio_number);
+  }
+}
+
+SCM
 setup_channel(SCM s_channel) {
   SCM smob;
   struct gpio *gpio;
   unsigned int gpio_number;
-  char *channel = scm_to_locale_string(s_channel);
   int exported;
+  char *channel = scm_to_locale_string(s_channel);
 
-  if (get_gpio_number(channel, &gpio_number)) {
+  get_gpio_number(channel, &gpio_number);
+
+  if (!gpio_number) {
     scm_throw(scm_from_utf8_symbol("gpio-error"), scm_from_utf8_string("unable to find pin number"));
   }
 
@@ -93,23 +107,11 @@ init_gpio_type(void) {
 }
 
 SCM
-set_direction(SCM gpio_smob, SCM direction_sym) {
+set_direction(SCM gpio_smob, SCM pud) {
   struct gpio *gpio;
-  char *direction;
   scm_assert_smob_type(gpio_tag, gpio_smob);
   gpio = (struct gpio *) SCM_SMOB_DATA (gpio_smob);
-  direction = (char *)malloc((scm_c_symbol_length(direction_sym) * sizeof(char)) + 1);
-  strcpy(direction, (char *) scm_symbol_to_string(direction_sym));
-
-  if (strcmp("input", direction) == 0) {
-    gpio_set_direction(gpio->pin_number, INPUT);
-  } else if (strcmp("output", direction) == 0) {
-    gpio_set_direction(gpio->pin_number, OUTPUT);
-  } else {
-    free(direction);
-    scm_throw(scm_from_utf8_symbol("gpio-error"), scm_from_utf8_string("'input and 'output are the only acceptable gpio directions"));
-  }
-  free(direction);
+  gpio_set_direction(gpio->pin_number, scm_to_int(pud));
   return gpio_smob;
 }
 
@@ -117,5 +119,9 @@ void
 scm_init_beagleio_gpio(void) {
   init_gpio_type();
   scm_c_define_gsubr("gpio-setup", 1, 0, 0, setup_channel);
-  scm_c_define_gsubr("gpio-direction-set!", 2, 0, 0, set_direction);
+  scm_c_define_gsubr("%gpio-direction-set!", 2, 0, 0, set_direction);
+  scm_c_define_gsubr("%gpio-direction-set!", 2, 0, 0, get_direction);
+  scm_c_define_gsubr("gpio-number-lookup", 1, 0, 0, lookup_gpio_number);
+  scm_c_define("INPUT", scm_from_int(INPUT));
+  scm_c_define("OUTPUT", scm_from_int(OUTPUT));
 }
