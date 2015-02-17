@@ -9,12 +9,13 @@
 (test-begin "gpio-number-lookup")
 (define-syntax test-gpio-numbers
   (syntax-rules (=>)
-    ((_ (name => pin) ...)
+    ((_ desc (name => pin) ...)
      (test-group
-      "testing lookup"
+      desc
       (test-eq pin (gpio-number-lookup name))
       ...))))
 (test-gpio-numbers
+ "(gpio-number-lookup name)"
  ("USR0" => 53)
  ("USR1" => 54)
  ("USR2" => 55)
@@ -35,8 +36,13 @@
 
 (test-begin "gpio-setup")
 (test-error 'gpio-error (gpio-setup "Hello"))
-(test-assert
-	 (begin
-	   (gpio-setup "P9_16")
-	   (access? "/sys/class/gpio/gpio51"  F_OK)))
+
+(map (lambda (name)
+       (test-assert
+	(let ((pin (gpio-number-lookup name)))
+	  (gpio-setup name)
+	  (access? (string-append "/sys/class/gpio/gpio" (number->string pin)) F_OK)
+	  #t)))
+     '("P9_16"))
+
 (test-end "gpio-setup")
