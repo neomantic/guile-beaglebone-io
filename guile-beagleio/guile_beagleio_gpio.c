@@ -147,7 +147,7 @@ scm_init_beagleio_gpio(void) {
   scm_c_define_gsubr("gpio-setup", 1, 0, 0, setup_channel);
   scm_c_define_gsubr("gpio-direction-set!", 2, 0, 0, set_direction);
   scm_c_define_gsubr("gpio-direction-get", 1, 0, 0, get_direction);
-  scm_c_define_gsubr("gpio-number-lookup", 1, 0, 0, (SCM_FUNC_CAST lookup_gpio_number));
+  scm_c_define_gsubr("gpio-number-lookup", 1, 0, 0, lookup_gpio_number);
   scm_c_define("INPUT", scm_from_int(INPUT));
   scm_c_define("OUTPUT", scm_from_int(OUTPUT));
   scm_c_define("HIGH", scm_from_int(HIGH));
