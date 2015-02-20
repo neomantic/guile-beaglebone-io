@@ -2,9 +2,11 @@
 
 (define-module (tests test-guile-beagleio)
   #:use-module (srfi srfi-64)
+  #:use-module (ice-9 rdelim)
   #:use-module (beagleio))
 
-
+(define (gpio-sysfs-path pin-number)
+  (string-append "/sys/class/gpio/gpio" (number->string pin-number)))
 
 (test-begin "gpio-number-lookup")
 
@@ -32,7 +34,7 @@
       (test-assert
        (let ((pin (gpio-number-lookup name)))
 	 (apply proc (list name))
-	 (access? (string-append "/sys/class/gpio/gpio" (number->string pin)) F_OK)
+	 (access? (gpio-sysfs-path pin) F_OK)
 	  #t)) ...))))
 
 (test-gpio-sysfs-export
@@ -44,3 +46,28 @@
  (gpio-setup "P9_16"))
 
 (test-end "gpio-setup")
+
+(test-begin "gpio-direction-set-bang")
+
+(test-assert (number? INPUT))
+(test-assert (number? OUTPUT))
+
+(test-equal
+ "in"
+ (let ((gpio (gpio-setup "P8_3")))
+   (gpio-direction-set! gpio INPUT)
+   (call-with-input-file
+       (string-append (gpio-sysfs-path (gpio-number-lookup "P8_3")) "/direction")
+     (lambda (port)
+       (read-line port)))))
+
+(test-equal
+ "out"
+ (let ((gpio (gpio-setup "P8_3")))
+   (gpio-direction-set! gpio OUTPUT)
+   (call-with-input-file
+       (string-append (gpio-sysfs-path (gpio-number-lookup "P8_3")) "/direction")
+     (lambda (port)
+       (read-line port)))))
+
+(test-end "gpio-direction-set-bang")
