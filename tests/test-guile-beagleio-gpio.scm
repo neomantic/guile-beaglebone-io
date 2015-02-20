@@ -8,7 +8,7 @@
 (define (gpio-sysfs-path pin-number)
   (string-append "/sys/class/gpio/gpio" (number->string pin-number)))
 
-(test-begin "gpio-number-lookup")
+(test-begin "gpio")
 
 (test-eq 53 (gpio-number-lookup "USR0"))
 (test-eq 54 (gpio-number-lookup "USR1"))
@@ -21,9 +21,6 @@
 (test-eq 50 (gpio-number-lookup "P9_14"))
 (test-eq 51 (gpio-number-lookup "P9_16"))
 
-(test-end "gpio-number-lookup")
-
-(test-begin "gpio-setup")
 (test-error 'gpio-error (gpio-setup "non existing name"))
 
 (define-syntax test-gpio-sysfs-export
@@ -44,10 +41,6 @@
  (gpio-setup "P8_6")
  (gpio-setup "P9_14")
  (gpio-setup "P9_16"))
-
-(test-end "gpio-setup")
-
-(test-begin "gpio-direction-set-bang")
 
 (test-assert (number? INPUT))
 (test-assert (number? OUTPUT))
@@ -70,4 +63,31 @@
      (lambda (port)
        (read-line port)))))
 
-(test-end "gpio-direction-set-bang")
+(test-group
+ "returns a gpio object"
+ (test-assert
+  (let ((gpio (gpio-setup "P8_3")))
+    (gpio? (gpio-direction-set! gpio OUTPUT))))
+ (test-assert
+  (let ((gpio (gpio-setup "P8_3")))
+    (gpio? (gpio-direction-set! gpio INPUT)))))
+
+(test-group
+ "returns the correct boolean"
+ (test-assert
+  (not (gpio? 199)))
+ (test-assert
+  (gpio? (gpio-setup "P8_3"))))
+
+;; (test-equal
+;;  OUTPUT
+;;  (let ((gpio (gpio-setup "P8_3")))
+;;    (gpio-direction-set! gpio OUTPUT)
+;;    (gpio-direction gpio)))
+
+;; (let ((gpio (gpio-setup "P8_3")))
+;;   (gpio-direction-set! gpio INPUT)
+;;   (display (gpio-direction gpio)))
+
+
+(test-end "gpio")

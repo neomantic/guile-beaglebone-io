@@ -141,13 +141,23 @@ get_direction(SCM gpio_smob) {
   return scm_from_uint(value);
 }
 
+SCM
+gpio_predicate(SCM smob) {
+  if (!SCM_SMOB_PREDICATE(gpio_tag, smob)) {
+    return SCM_BOOL_F;
+  } else {
+     return SCM_BOOL_T;
+  }
+}
+
 void
 scm_init_beagleio_gpio(void) {
   init_gpio_type();
   scm_c_define_gsubr("gpio-setup", 1, 0, 0, setup_channel);
   scm_c_define_gsubr("gpio-direction-set!", 2, 0, 0, set_direction);
-  scm_c_define_gsubr("gpio-direction-get", 1, 0, 0, get_direction);
+  scm_c_define_gsubr("gpio-direction", 1, 0, 0, get_direction);
   scm_c_define_gsubr("gpio-number-lookup", 1, 0, 0, lookup_gpio_number);
+  scm_c_define_gsubr("gpio?", 1, 0, 0, gpio_predicate);
   scm_c_define("INPUT", scm_from_int(INPUT));
   scm_c_define("OUTPUT", scm_from_int(OUTPUT));
   scm_c_define("HIGH", scm_from_int(HIGH));

@@ -2,8 +2,9 @@
   #:use-module ((ice-9 match))
   #:export (gpio-setup
 	    gpio-direction-set!
-	    gpio-direction-get
+	    gpio-direction
 	    gpio-number-lookup
+	    gpio?
 	    INPUT
 	    OUTPUT
 	    HIGH
