@@ -44,6 +44,7 @@
 
 (test-assert (number? INPUT))
 (test-assert (number? OUTPUT))
+(test-assert (not (equal? INPUT OUTPUT)))
 
 (test-equal
  "in"
