@@ -36,14 +36,12 @@ setup_channel(SCM s_channel) {
   get_gpio_number(channel, &gpio_number);
 
   if (!gpio_number) {
-    scm_throw(scm_from_utf8_symbol("gpio-error"), scm_list_1(scm_from_utf8_string("unable to find pin number")));
-    return SCM_UNDEFINED;
+    return scm_throw(scm_from_utf8_symbol("gpio-error"), scm_list_1(scm_from_utf8_string("unable to find pin number")));
   }
 
   exported = gpio_export(gpio_number);
   if (exported != 0 ) {
-    scm_throw(scm_from_utf8_symbol("gpio-error"), scm_list_1(scm_from_utf8_string("unable to export to /sys/cass/gpio")));
-    return SCM_UNDEFINED;
+    return scm_throw(scm_from_utf8_symbol("gpio-error"), scm_list_1(scm_from_utf8_string("unable to export to /sys/cass/gpio")));
   }
 
   gpio = (struct gpio *) scm_gc_malloc(sizeof(struct gpio), "gpio");
@@ -120,13 +118,11 @@ set_direction(SCM gpio_smob, SCM pud) {
   } else if ( pud_int == OUTPUT ){
     success = gpio_set_direction(gpio->pin_number, pud_int);
   } else {
-    scm_throw(scm_from_utf8_symbol("gpio-error"), scm_list_1(scm_from_utf8_string("only accepts INPUT and OUTPUT")));
-    return SCM_UNDEFINED;
+    return scm_throw(scm_from_utf8_symbol("gpio-error"), scm_list_1(scm_from_utf8_string("only accepts INPUT and OUTPUT")));
   }
 
   if (success == -1 ) {
-    scm_throw(scm_from_utf8_symbol("gpio-error"), scm_list_1(scm_from_utf8_string("unable to write to /sys/class/gpio")));
-    return SCM_UNDEFINED;
+    return scm_throw(scm_from_utf8_symbol("gpio-error"), scm_list_1(scm_from_utf8_string("unable to write to /sys/class/gpio")));
   }
 
   return gpio_smob;
@@ -140,8 +136,7 @@ get_direction(SCM gpio_smob) {
   gpio = (struct gpio *) SCM_SMOB_DATA (gpio_smob);
   int success = gpio_get_direction(gpio->pin_number, value);
   if ( success == -1 ) {
-    scm_throw(scm_from_utf8_symbol("gpio-error"), scm_list_1(scm_from_utf8_string("unable to read /sys/class/gpio")));
-    return SCM_UNSPECIFIED;
+    return scm_throw(scm_from_utf8_symbol("gpio-error"), scm_list_1(scm_from_utf8_string("unable to read /sys/class/gpio")));
   }
   return scm_from_uint(value);
 }
@@ -152,7 +147,7 @@ scm_init_beagleio_gpio(void) {
   scm_c_define_gsubr("gpio-setup", 1, 0, 0, setup_channel);
   scm_c_define_gsubr("gpio-direction-set!", 2, 0, 0, set_direction);
   scm_c_define_gsubr("gpio-direction-get", 1, 0, 0, get_direction);
-  scm_c_define_gsubr("gpio-number-lookup", 1, 0, 0, lookup_gpio_number);
+  scm_c_define_gsubr("gpio-number-lookup", 1, 0, 0, (SCM_FUNC_CAST lookup_gpio_number));
   scm_c_define("INPUT", scm_from_int(INPUT));
   scm_c_define("OUTPUT", scm_from_int(OUTPUT));
   scm_c_define("HIGH", scm_from_int(HIGH));
