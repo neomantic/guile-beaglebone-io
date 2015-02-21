@@ -5,10 +5,10 @@
   #:use-module (ice-9 rdelim)
   #:use-module (beagleio))
 
+(test-begin "gpio")
+
 (define (gpio-sysfs-path pin-number)
   (string-append "/sys/class/gpio/gpio" (number->string pin-number)))
-
-(test-begin "gpio")
 
 (test-eq 53 (gpio-number-lookup "USR0"))
 (test-eq 54 (gpio-number-lookup "USR1"))
@@ -41,6 +41,7 @@
  (gpio-setup "P8_6")
  (gpio-setup "P9_14")
  (gpio-setup "P9_16"))
+
 
 (test-assert (number? INPUT))
 (test-assert (number? OUTPUT))
@@ -80,15 +81,18 @@
  (test-assert
   (gpio? (gpio-setup "P8_3"))))
 
-;; (test-equal
-;;  OUTPUT
-;;  (let ((gpio (gpio-setup "P8_3")))
-;;    (gpio-direction-set! gpio OUTPUT)
-;;    (gpio-direction gpio)))
-
-;; (let ((gpio (gpio-setup "P8_3")))
-;;   (gpio-direction-set! gpio INPUT)
-;;   (display (gpio-direction gpio)))
+(test-group
+ "getting the gpio direction"
+ (test-equal
+  OUTPUT
+  (let ((gpio (gpio-setup "P8_3")))
+    (gpio-direction-set! gpio OUTPUT)
+    (gpio-direction gpio)))
+ (test-equal
+  INPUT
+  (let ((gpio (gpio-setup "P8_3")))
+    (gpio-direction-set! gpio INPUT)
+    (gpio-direction gpio))))
 
 
 (test-end "gpio")
