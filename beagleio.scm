@@ -4,6 +4,7 @@
 	    gpio-cleanup
 	    gpio-direction-set!
 	    gpio-direction
+	    gpio-value-set!
 	    gpio-number-lookup
 	    gpio?
 	    INPUT
