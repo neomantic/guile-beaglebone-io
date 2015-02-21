@@ -19,7 +19,7 @@ lookup_gpio_number(SCM s_channel) {
   char *channel = scm_to_locale_string(s_channel);
   get_gpio_number(channel, &gpio_number);
   if(!gpio_number) {
-    return SCM_UNDEFINED;
+    return SCM_EOL;
   }
   return scm_from_ulong(gpio_number);
 }
