@@ -174,6 +174,10 @@ get_value(SCM gpio_smob) {
 
 void
 scm_init_beagleio_gpio(void) {
+  static int initialized = 0;
+  if (initialized)
+    return;
+
   init_gpio_type();
   scm_c_define_gsubr("gpio-setup", 1, 0, 0, setup_channel);
   scm_c_define_gsubr("gpio-cleanup", 0, 0, 0, gpio_cleanup);
@@ -187,4 +191,6 @@ scm_init_beagleio_gpio(void) {
   scm_c_define_gsubr("gpio-value", 1, 0, 0, get_value);
   scm_c_define("HIGH", scm_from_int(HIGH));
   scm_c_define("LOW", scm_from_int(LOW));
+
+  initialized = 1;
 }
