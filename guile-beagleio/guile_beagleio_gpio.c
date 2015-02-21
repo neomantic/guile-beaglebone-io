@@ -20,9 +20,8 @@ lookup_gpio_number(SCM s_channel) {
   get_gpio_number(channel, &gpio_number);
   if(!gpio_number) {
     return SCM_UNDEFINED;
-  } else {
-    return scm_from_ulong(gpio_number);
   }
+  return scm_from_ulong(gpio_number);
 }
 
 SCM
@@ -87,14 +86,10 @@ static SCM
 equal_gpio(SCM gpio_smob, SCM other_gpio_smob ){
   struct gpio *gpio = (struct gpio *) SCM_SMOB_DATA (gpio_smob);
   struct gpio *other = (struct gpio *) SCM_SMOB_DATA (other_gpio_smob);
-  if ( gpio->pin_number == other->pin_number)
-    {
+  if ( gpio->pin_number == other->pin_number){
       return SCM_BOOL_T;
-    }
-  else
-    {
-      return SCM_BOOL_F;
-    }
+  }
+  return SCM_BOOL_F;
 }
 
 void
@@ -144,9 +139,9 @@ SCM
 gpio_predicate(SCM smob) {
   if (!SCM_SMOB_PREDICATE(gpio_tag, smob)) {
     return SCM_BOOL_F;
-  } else {
-     return SCM_BOOL_T;
   }
+  return SCM_BOOL_T;
+}
 }
 
 void
