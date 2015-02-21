@@ -5,6 +5,7 @@
 	    gpio-direction-set!
 	    gpio-direction
 	    gpio-value-set!
+	    gpio-value
 	    gpio-number-lookup
 	    gpio?
 	    INPUT

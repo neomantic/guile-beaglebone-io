@@ -56,9 +56,9 @@
  (gpio-cleanup))
 
 (test-group-with-cleanup
- "it has no direction on initial setup"
- (test-error
-  'gpio-error
+ "a gpio is setup with an INPUT direction"
+ (test-equal
+  INPUT
   (let ((gpio (gpio-setup "P9_16")))
     (gpio-direction gpio)))
  (gpio-cleanup))
@@ -169,6 +169,24 @@
      (call-with-input-file
 	 (string-append (gpio-sysfs-path (gpio-number-lookup "P8_3")) "/value")
        (lambda (port)
-	 (read-line port)))))))
+	 (read-line port)))))
+  (gpio-cleanup)))
+
+
+(test-group-with-cleanup
+ "returns the correct value for a gpio"
+ (test-equal
+  HIGH
+  (let ((gpio (gpio-setup "P9_14")))
+    (gpio-direction-set! gpio OUTPUT)
+    (gpio-value-set! gpio HIGH)
+    (gpio-value gpio)))
+ (gpio-cleanup)
+ (test-equal
+  LOW
+  (let ((gpio (gpio-setup "P9_14")))
+    (gpio-direction-set! gpio OUTPUT)
+    (gpio-value-set! gpio LOW)
+    (gpio-value gpio))))
 
 (test-end "gpio")
