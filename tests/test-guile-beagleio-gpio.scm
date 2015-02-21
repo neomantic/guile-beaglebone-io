@@ -38,7 +38,7 @@
 	 (sysfs-exists? pin)
 	  #t)) ...))))
 
-(test-group
+(test-group-with-cleanup
  "returns a gpio connection"
  (test-assert (gpio? (gpio-setup "P8_3")))
  (test-assert (gpio? (gpio-setup "P8_4")))
@@ -52,7 +52,8 @@
   (gpio-setup "P8_5")
   (gpio-setup "P8_6")
   (gpio-setup "P9_14")
-  (gpio-setup "P9_16")))
+  (gpio-setup "P9_16"))
+ (gpio-cleanup))
 
 (test-assert (number? INPUT))
 (test-assert (number? OUTPUT))
@@ -60,39 +61,45 @@
 
 (test-group
  "setting the gpio direction"
- (test-equal
-  "in"
-  (let ((gpio (gpio-setup "P8_3")))
-    (gpio-direction-set! gpio INPUT)
-    (call-with-input-file
-	(string-append (gpio-sysfs-path (gpio-number-lookup "P8_3")) "/direction")
-      (lambda (port)
-	(read-line port)))))
- (test-equal
-  "out"
-  (let ((gpio (gpio-setup "P8_3")))
-    (gpio-direction-set! gpio OUTPUT)
-    (call-with-input-file
-	(string-append (gpio-sysfs-path (gpio-number-lookup "P8_3")) "/direction")
-      (lambda (port)
-	(read-line port)))))
- (test-group
+ (test-group-with-cleanup
+  (test-equal
+   "in"
+   (let ((gpio (gpio-setup "P8_3")))
+     (gpio-direction-set! gpio INPUT)
+     (call-with-input-file
+	 (string-append (gpio-sysfs-path (gpio-number-lookup "P8_3")) "/direction")
+       (lambda (port)
+	 (read-line port)))))
+  (gpio-cleanup))
+ (test-group-with-cleanup
+  (test-equal
+   "out"
+   (let ((gpio (gpio-setup "P8_3")))
+     (gpio-direction-set! gpio OUTPUT)
+     (call-with-input-file
+	 (string-append (gpio-sysfs-path (gpio-number-lookup "P8_3")) "/direction")
+       (lambda (port)
+	 (read-line port)))))
+  (gpio-cleanup))
+ (test-group-with-cleanup
   "returns a gpio object"
   (test-assert
    (let ((gpio (gpio-setup "P8_3")))
      (gpio? (gpio-direction-set! gpio OUTPUT))))
   (test-assert
    (let ((gpio (gpio-setup "P8_3")))
-     (gpio? (gpio-direction-set! gpio INPUT))))))
+     (gpio? (gpio-direction-set! gpio INPUT))))
+  (gpio-cleanup)))
 
-(test-group
+(test-group-with-cleanup
  "returns the correct boolean when testing if value is a gpio connection"
  (test-assert
   (not (gpio? 199)))
  (test-assert
-  (gpio? (gpio-setup "P8_3"))))
+  (gpio? (gpio-setup "P8_3")))
+ (gpio-cleanup))
 
-(test-group
+(test-group-with-cleanup
  "getting the gpio direction"
  (test-equal
   OUTPUT
@@ -103,15 +110,17 @@
   INPUT
   (let ((gpio (gpio-setup "P8_3")))
     (gpio-direction-set! gpio INPUT)
-    (gpio-direction gpio))))
+    (gpio-direction gpio)))
+ (gpio-cleanup))
 
-(test-group
+(test-group-with-cleanup
  "cleanup exports"
  (test-assert
   (let* ((names '("P8_3" "P9_16"))
 	 (pins (map gpio-number-lookup names)))
     (map (lambda (name) (gpio-setup name)) names)
     (gpio-cleanup)
-    (not (member #t (map sysfs-exists? pins))))))
+    (not (member #t (map sysfs-exists? pins)))))
+ (gpio-cleanup))
 
 (test-end "gpio")
