@@ -126,10 +126,10 @@ set_direction(SCM gpio_smob, SCM pud) {
 SCM
 get_direction(SCM gpio_smob) {
   struct gpio *gpio;
-  unsigned int *value;
+  unsigned int value;
   scm_assert_smob_type(gpio_tag, gpio_smob);
   gpio = (struct gpio *) SCM_SMOB_DATA (gpio_smob);
-  if (gpio_get_direction(38, &value) == -1) {
+  if (gpio_get_direction(gpio->pin_number, &value) == -1) {
     return scm_throw(scm_from_utf8_symbol("gpio-error"), scm_list_1(scm_from_utf8_string("unable to read /sys/class/gpio")));
   }
   return scm_from_int(value);
