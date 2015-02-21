@@ -47,35 +47,35 @@
 (test-assert (number? OUTPUT))
 (test-assert (not (equal? INPUT OUTPUT)))
 
-(test-equal
- "in"
- (let ((gpio (gpio-setup "P8_3")))
-   (gpio-direction-set! gpio INPUT)
-   (call-with-input-file
-       (string-append (gpio-sysfs-path (gpio-number-lookup "P8_3")) "/direction")
-     (lambda (port)
-       (read-line port)))))
-
-(test-equal
- "out"
- (let ((gpio (gpio-setup "P8_3")))
-   (gpio-direction-set! gpio OUTPUT)
-   (call-with-input-file
-       (string-append (gpio-sysfs-path (gpio-number-lookup "P8_3")) "/direction")
-     (lambda (port)
-       (read-line port)))))
+(test-group
+ "setting the gpio direction"
+ (test-equal
+  "in"
+  (let ((gpio (gpio-setup "P8_3")))
+    (gpio-direction-set! gpio INPUT)
+    (call-with-input-file
+	(string-append (gpio-sysfs-path (gpio-number-lookup "P8_3")) "/direction")
+      (lambda (port)
+	(read-line port)))))
+ (test-equal
+  "out"
+  (let ((gpio (gpio-setup "P8_3")))
+    (gpio-direction-set! gpio OUTPUT)
+    (call-with-input-file
+	(string-append (gpio-sysfs-path (gpio-number-lookup "P8_3")) "/direction")
+      (lambda (port)
+	(read-line port)))))
+ (test-group
+  "returns a gpio object"
+  (test-assert
+   (let ((gpio (gpio-setup "P8_3")))
+     (gpio? (gpio-direction-set! gpio OUTPUT))))
+  (test-assert
+   (let ((gpio (gpio-setup "P8_3")))
+     (gpio? (gpio-direction-set! gpio INPUT))))))
 
 (test-group
- "returns a gpio object"
- (test-assert
-  (let ((gpio (gpio-setup "P8_3")))
-    (gpio? (gpio-direction-set! gpio OUTPUT))))
- (test-assert
-  (let ((gpio (gpio-setup "P8_3")))
-    (gpio? (gpio-direction-set! gpio INPUT)))))
-
-(test-group
- "returns the correct boolean"
+ "returns the correct boolean when testing if value is a gpio connection"
  (test-assert
   (not (gpio? 199)))
  (test-assert
