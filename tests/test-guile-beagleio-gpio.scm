@@ -34,14 +34,21 @@
 	 (access? (gpio-sysfs-path pin) F_OK)
 	  #t)) ...))))
 
-(test-gpio-sysfs-export
- (gpio-setup "P8_3")
- (gpio-setup "P8_4")
- (gpio-setup "P8_5")
- (gpio-setup "P8_6")
- (gpio-setup "P9_14")
- (gpio-setup "P9_16"))
-
+(test-group
+ "returns a gpio connection"
+ (test-assert (gpio? (gpio-setup "P8_3")))
+ (test-assert (gpio? (gpio-setup "P8_4")))
+ (test-assert (gpio? (gpio-setup "P8_5")))
+ (test-assert (gpio? (gpio-setup "P8_6")))
+ (test-assert (gpio? (gpio-setup "P9_14")))
+ (test-assert (gpio? (gpio-setup "P9_16")))
+ (test-gpio-sysfs-export
+  (gpio-setup "P8_3")
+  (gpio-setup "P8_4")
+  (gpio-setup "P8_5")
+  (gpio-setup "P8_6")
+  (gpio-setup "P9_14")
+  (gpio-setup "P9_16")))
 
 (test-assert (number? INPUT))
 (test-assert (number? OUTPUT))
