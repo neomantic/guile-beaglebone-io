@@ -189,4 +189,14 @@
     (gpio-value-set! gpio LOW)
     (gpio-value gpio))))
 
+(test-group-with-cleanup
+ "returns correct boolean when comparing gpios"
+ (test-assert
+  (let ((gpio1 (gpio-setup "P8_3"))
+	(gpio2 (gpio-setup "P8_4")))
+    (not (equal? gpio1 gpio2))))
+ (test-assert
+  (let ((gpio (gpio-setup "P9_14")))
+    (equal? gpio gpio))))
+
 (test-end "gpio")

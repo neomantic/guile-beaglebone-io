@@ -84,6 +84,8 @@ mark_gpio(SCM gpio_smob) {
 
 static SCM
 equal_gpio(SCM gpio_smob, SCM other_gpio_smob ){
+  scm_assert_smob_type(gpio_tag, gpio_smob);
+  scm_assert_smob_type(gpio_tag, other_gpio_smob);
   struct gpio *gpio = (struct gpio *) SCM_SMOB_DATA (gpio_smob);
   struct gpio *other = (struct gpio *) SCM_SMOB_DATA (other_gpio_smob);
   if ( gpio->pin_number == other->pin_number){
@@ -98,7 +100,7 @@ init_gpio_type(void) {
   scm_set_smob_print(gpio_tag, print_gpio);
   scm_set_smob_free(gpio_tag, free_gpio);
   scm_set_smob_mark(gpio_tag, mark_gpio);
-  //scm_set_smob_equalp(gpio_tag, equal_gpio);
+  scm_set_smob_equalp(gpio_tag, equal_gpio);
 }
 
 SCM
