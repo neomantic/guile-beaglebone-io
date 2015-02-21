@@ -55,6 +55,14 @@
   (gpio-setup "P9_16"))
  (gpio-cleanup))
 
+(test-group-with-cleanup
+ "it has no direction on initial setup"
+ (test-error
+  'gpio-error
+  (let ((gpio (gpio-setup "P9_16")))
+    (gpio-direction gpio)))
+ (gpio-cleanup))
+
 (test-assert (number? INPUT))
 (test-assert (number? OUTPUT))
 (test-assert (not (equal? INPUT OUTPUT)))
