@@ -142,12 +142,18 @@ gpio_predicate(SCM smob) {
   }
   return SCM_BOOL_T;
 }
+
+SCM
+gpio_cleanup() {
+  event_cleanup();
+  return SCM_UNDEFINED;
 }
 
 void
 scm_init_beagleio_gpio(void) {
   init_gpio_type();
   scm_c_define_gsubr("gpio-setup", 1, 0, 0, setup_channel);
+  scm_c_define_gsubr("gpio-cleanup", 0, 0, 0, gpio_cleanup);
   scm_c_define_gsubr("gpio-direction-set!", 2, 0, 0, set_direction);
   scm_c_define_gsubr("gpio-direction", 1, 0, 0, get_direction);
   scm_c_define_gsubr("gpio-number-lookup", 1, 0, 0, lookup_gpio_number);

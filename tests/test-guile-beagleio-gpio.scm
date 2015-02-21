@@ -2,6 +2,7 @@
 
 (define-module (tests test-guile-beagleio)
   #:use-module (srfi srfi-64)
+  #:use-module (srfi srfi-1)
   #:use-module (ice-9 rdelim)
   #:use-module (beagleio))
 
@@ -9,6 +10,9 @@
 
 (define (gpio-sysfs-path pin-number)
   (string-append "/sys/class/gpio/gpio" (number->string pin-number)))
+
+(define (sysfs-exists? pin)
+  (access? (gpio-sysfs-path pin) F_OK))
 
 (test-eq 53 (gpio-number-lookup "USR0"))
 (test-eq 54 (gpio-number-lookup "USR1"))
@@ -31,7 +35,7 @@
       (test-assert
        (let ((pin (gpio-number-lookup name)))
 	 (apply proc (list name))
-	 (access? (gpio-sysfs-path pin) F_OK)
+	 (sysfs-exists? pin)
 	  #t)) ...))))
 
 (test-group
@@ -92,7 +96,7 @@
  "getting the gpio direction"
  (test-equal
   OUTPUT
-  (let ((gpio (gpio-setup "P8_3")))
+  (let pio((gpio (gpio-setup "P8_3")))
     (gpio-direction-set! gpio OUTPUT)
     (gpio-direction gpio)))
  (test-equal
@@ -101,5 +105,13 @@
     (gpio-direction-set! gpio INPUT)
     (gpio-direction gpio))))
 
+(test-group
+ "cleanup exports"
+ (test-assert
+  (let* ((names '("P8_3" "P9_16"))
+	 (pins (map gpio-number-lookup names)))
+    (map (lambda (name) (gpio-setup name)) names)
+    (gpio-cleanup)
+    (not (member #t (map sysfs-exists? pins))))))
 
 (test-end "gpio")
