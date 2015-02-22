@@ -141,7 +141,7 @@
   (gpio-setup "P8_6")
   (gpio-setup "P9_14")
   (gpio-setup "P9_16"))
- (gpio-cleanup))
+ (gpio-cleanup-all))
 
 (test-group-with-cleanup
  "a gpio is setup with an OUTPUT direction"
@@ -149,7 +149,7 @@
   OUTPUT
   (let ((gpio (gpio-setup "P9_16")))
     (gpio-direction gpio)))
- (gpio-cleanup))
+ (gpio-cleanup-all))
 
 (test-assert (number? INPUT))
 (test-assert (number? OUTPUT))
@@ -166,7 +166,7 @@
 	 (string-append (gpio-sysfs-path (gpio-number-lookup "P8_3")) "/direction")
        (lambda (port)
 	 (read-line port)))))
-  (gpio-cleanup))
+  (gpio-cleanup-all))
  (test-group-with-cleanup
   (test-equal
    "out"
@@ -176,7 +176,7 @@
 	 (string-append (gpio-sysfs-path (gpio-number-lookup "P8_3")) "/direction")
        (lambda (port)
 	 (read-line port)))))
-  (gpio-cleanup))
+  (gpio-cleanup-all))
  (test-group-with-cleanup
   "returns a gpio object"
   (test-assert
@@ -185,7 +185,7 @@
   (test-assert
    (let ((gpio (gpio-setup "P8_3")))
      (gpio? (gpio-direction-set! gpio INPUT))))
-  (gpio-cleanup)))
+  (gpio-cleanup-all)))
 
 (test-group-with-cleanup
  "returns the correct boolean when testing if value is a gpio connection"
@@ -193,7 +193,7 @@
   (not (gpio? 199)))
  (test-assert
   (gpio? (gpio-setup "P8_3")))
- (gpio-cleanup))
+ (gpio-cleanup-all))
 
 (test-group-with-cleanup
  "getting the gpio direction"
@@ -207,7 +207,7 @@
   (let ((gpio (gpio-setup "P8_3")))
     (gpio-direction-set! gpio INPUT)
     (gpio-direction gpio)))
- (gpio-cleanup))
+ (gpio-cleanup-all))
 
 (test-group
  "cleanup exports"
@@ -215,7 +215,7 @@
   (let* ((names '("P8_3" "P9_16"))
 	 (pins (map gpio-number-lookup names)))
     (map (lambda (name) (gpio-setup name)) names)
-    (gpio-cleanup)
+    (gpio-cleanup-all)
     (not (member #t (map sysfs-exists? pins))))))
 
 (test-group
@@ -234,7 +234,7 @@
   (test-assert
    (let ((gpio (gpio-setup "P9_16")))
      (gpio? (gpio-value-set! gpio HIGH))))
-  (gpio-cleanup))
+  (gpio-cleanup-all))
  (test-group-with-cleanup
   "setting the gpio to ouput"
   (test-equal
@@ -246,7 +246,7 @@
 	 (string-append (gpio-sysfs-path (gpio-number-lookup "P8_3")) "/value")
        (lambda (port)
 	 (read-line port)))))
-  (gpio-cleanup))
+  (gpio-cleanup-all))
  (test-group-with-cleanup
   "setting the gpio to input"
   (test-equal
@@ -258,7 +258,7 @@
 	 (string-append (gpio-sysfs-path (gpio-number-lookup "P8_3")) "/value")
        (lambda (port)
 	 (read-line port)))))
-  (gpio-cleanup)))
+  (gpio-cleanup-all)))
 
 
 (test-group-with-cleanup
@@ -269,7 +269,7 @@
     (gpio-direction-set! gpio OUTPUT)
     (gpio-value-set! gpio HIGH)
     (gpio-value gpio)))
- (gpio-cleanup)
+ (gpio-cleanup-all)
  (test-equal
   LOW
   (let ((gpio (gpio-setup "P9_14")))
