@@ -1,0 +1,10 @@
+The sources in this directory are copyrighted by Justin Cooper,
+Adafruit Industries. and Ben Cronstron.  They are both licensed
+under the MIT License
+
+Ben Cronston's code can be found here: https://code.google.com/p/raspberry-gpio-python
+And Justin Cooper's code can be found here: https://github.com/adafruit/adafruit-beaglebone-io-python
+
+The source code in this this directory has been taken from Justin Cooper's python library.
+
+I have made a few minor edits to their code, which fall under the MIT license.
