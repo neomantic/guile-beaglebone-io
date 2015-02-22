@@ -143,14 +143,6 @@
   (gpio-setup "P9_16"))
  (gpio-cleanup-all))
 
-(test-group-with-cleanup
- "a gpio is setup with an OUTPUT direction"
- (test-equal
-  OUTPUT
-  (let ((gpio (gpio-setup "P9_16")))
-    (gpio-direction gpio)))
- (gpio-cleanup-all))
-
 (test-assert (number? INPUT))
 (test-assert (number? OUTPUT))
 (test-assert (not (equal? INPUT OUTPUT)))
