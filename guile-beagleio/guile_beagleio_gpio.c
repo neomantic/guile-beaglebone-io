@@ -40,7 +40,7 @@ setup_channel(SCM s_channel) {
 
   exported = gpio_export(gpio_number);
   if (exported != 0 ) {
-    return scm_throw(scm_from_utf8_symbol("gpio-error"), scm_list_1(scm_from_utf8_string("unable to export to /sys/cass/gpio")));
+    return scm_throw(scm_from_utf8_symbol("gpio-error"), scm_list_1(scm_from_utf8_string("unable to export to /sys/class/gpio")));
   }
 
   gpio = (struct gpio *) scm_gc_malloc(sizeof(struct gpio), "gpio");
