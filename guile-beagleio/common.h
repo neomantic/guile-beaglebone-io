@@ -2,10 +2,13 @@
 #define COMMON_H
 
 /*
+Copyright (c) 2015 Chad Albers
+
 Copyright (c) 2013 Adafruit
 
 Original RPi.GPIO Author Ben Croston
 Modified for BBIO Author Justin Cooper
+Modified for guile-beaglebone-io Author Chad Albers
 
 This file incorporates work covered by the following copyright and
 permission notice, all modified code adopts the original license:
