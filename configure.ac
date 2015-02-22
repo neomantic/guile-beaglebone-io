@@ -31,6 +31,7 @@ AC_FUNC_MALLOC
 AC_CHECK_FUNCS([strstr])
 
 AC_CONFIG_FILES([Makefile
-                 guile-beagleio/Makefile])
+                 guile-beagleio/Makefile
+		 guile-beagleio/bbio/Makefile])
 
 AC_OUTPUT

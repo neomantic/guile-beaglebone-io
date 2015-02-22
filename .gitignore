@@ -1,6 +1,8 @@
 *.o
 *.lo
 *.la
+.a
+.ali
 Makefile
 Makefile.in
 /autom4te.cache
@@ -25,3 +27,4 @@ libtool
 config.guess
 config.sub
 */.libs
+*/*/.libs
